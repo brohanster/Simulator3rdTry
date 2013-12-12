@@ -17,7 +17,7 @@ public class MyGdxGame implements ApplicationListener {
 	Texture launcher;
 	Texture bullet;
 	Rectangle shooter;
-	float x, y, angle, velocity, xVel, yVel, deltaTime;
+	float x, y, angle, velocity, xVel, yVel, deltaTime, mult;
 	SpriteBatch batch;
 	public void compute(){
 		angle = (angle*(float)Math.PI)/180;
@@ -45,7 +45,7 @@ public class MyGdxGame implements ApplicationListener {
 		shooter = new Rectangle();
 		shooter.x = 0;
 		shooter.y = 0;
-		velocity = 70;
+		velocity = 39;
 		compute();
 		deltaTime = TimeUtils.nanoTime();
 		
@@ -62,12 +62,26 @@ public class MyGdxGame implements ApplicationListener {
 		Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
         batch.setProjectionMatrix(cam.combined);
+        findMult();
         batch.begin();
         batch.draw(launcher, shooter.x, shooter.y);
-        batch.draw(bullet, x((TimeUtils.nanoTime() - deltaTime)/1000000000), y((TimeUtils.nanoTime()-deltaTime)/1000000000));
+        if(y((TimeUtils.nanoTime() - deltaTime)/1000000000) > 0)
+        	batch.draw(bullet,mult * x((TimeUtils.nanoTime() - deltaTime)/1000000000),mult * y((TimeUtils.nanoTime()-deltaTime)/1000000000));
         batch.end();
 	}
-
+	public void findMult(){
+		if(velocity <= 10)
+			mult = 50f;
+		if(velocity > 10 && velocity <= 20)
+			mult = 15f;
+		if(velocity > 20 && velocity <= 40)
+			mult = 3f;
+		if(velocity > 40 && velocity <= 80)
+			mult = 1f;
+		else
+			mult = .9f;
+			
+	}
 	@Override
 	public void resize(int width, int height) {
 	}
